@@ -1,0 +1,44 @@
+version: '2'
+services:
+        
+  user-preferences:
+     image: artifacts.calypso.com:5000/calypso/user-preferences-service:1.5.4
+     container_name: user-preferences
+     ports:
+     - "9027:8080"
+     environment:
+      - "CATALINA_OPTS=
+        -Xmx250m
+        -Dport=9027
+        -Dprofile=dev1
+        -DappName=user-preferences
+        -DgatewayEnabled=false
+        -DgatewayV2Enabled=false
+        -Dspring.cloud.config.uri=http://10.3.106.64:7000/config
+        -DconsulHost=10.3.106.64
+        -DgatewayURL=http://10.3.106.64
+        -Dspring.datasource.url=jdbc:postgresql://10.3.106.64:5432/userpreferences"
+        
+        
+  collateral-exceptions:
+   image: artifacts.calypso.com:18180/calypso/collateral-exceptions-service:1.2.0
+   container_name: collateral-exceptions
+   ports:
+   - "8015:8080"
+   environment:
+     - "CATALINA_OPTS=
+       -Xmx250m
+       -Dport=8015
+       -Dprofile=dev1
+       -DappName=collateral-exceptions
+       -DgatewayEnabled=false
+       -DgatewayV2Enabled=false
+       -Dspring.cloud.config.uri=http://10.3.106.64:7000/config
+       -DgatewayURL=http://10.3.106.64
+       -Dspring.jpa.properties.hibernate.hbm2ddl.auto=update
+       -Dspring.datasource.url=jdbc:postgresql://10.3.106.64:5432/exceptions"
+
+        
+        
+
+        

@@ -1,0 +1,142 @@
+version: '2'
+services:
+  # collateral-notifications:
+    # image: artifacts.calypso.com:18180/calypso/notifications-service:${NOTIFICATION_SERVICE_VERSION}
+    # container_name: collateral-notifications
+    # ports:
+    # - "9004:8080"
+    # environment:
+      # - "CATALINA_OPTS=
+        # -Xmx500m
+        # -Dport=9004
+        # -Dprofile=${PROFILE}
+        # -DappName=notifications
+        # -DgatewayEnabled=false
+        # -DgatewayV2Enabled=true
+        # -Dspring.cloud.config.uri=http://${LOCAL_DOCKER_HOST}:7000/config
+        # -DconsulHost=${LOCAL_DOCKER_HOST}
+        # -DgatewayURL=http://${LOCAL_DOCKER_HOST}
+        # -Dspring.cloud.consul.discovery.health-check-path=/info
+        # -Dspring.cloud.consul.discovery.ipAddress=${LOCAL_DOCKER_HOST}
+        # -Dspring.cloud.consul.discovery.preferIpAddress=true
+        # -Dkafka.topics.reports.bootstrap.host=${LOCAL_DOCKER_HOST}"
+        
+  user-preferences:
+     image: artifacts.calypso.com:5000/calypso/user-preferences-service:1.5.4
+     container_name: user-preferences
+     ports:
+     - "9027:8080"
+     environment:
+      - "CATALINA_OPTS=
+        -Xmx250m
+        -Dport=9027
+        -Dprofile=${PROFILE}
+        -DappName=user-preferences
+        -DgatewayEnabled=false
+        -DgatewayV2Enabled=false
+        -Dspring.cloud.config.uri=http://${LOCAL_DOCKER_HOST}:7000/config
+        -DconsulHost=${LOCAL_DOCKER_HOST}
+        -DgatewayURL=http://${LOCAL_DOCKER_HOST}
+        -Dspring.datasource.url=jdbc:postgresql://${LOCAL_DOCKER_HOST}:5432/userpreferences"
+        
+        
+  collateral-exceptions:
+   image: artifacts.calypso.com:18180/calypso/collateral-exceptions-service:${EXCEPTIONS_SERVICE_VERSION}
+   container_name: collateral-exceptions
+   ports:
+   - "8015:8080"
+   environment:
+     - "CATALINA_OPTS=
+       -Xmx250m
+       -Dport=8015
+       -Dprofile=${PROFILE}
+       -DappName=collateral-exceptions
+       -DgatewayEnabled=false
+       -DgatewayV2Enabled=false
+       -Dspring.cloud.config.uri=http://${LOCAL_DOCKER_HOST}:7000/config
+       -DgatewayURL=http://${LOCAL_DOCKER_HOST}
+       -Dspring.jpa.properties.hibernate.hbm2ddl.auto=update
+       -Dspring.datasource.url=jdbc:postgresql://${LOCAL_DOCKER_HOST}:5432/exceptions"
+
+  # collateral-reports:
+  #   image: artifacts.calypso.com:18180/calypso/collateral-reports-service:${REPORTS_SERVICE_VERSION}
+  #   container_name: collateral-reports
+  #   ports:
+  #   - "9009:8080"
+  #   environment:
+  #     - "CATALINA_OPTS=
+  #       -Xmx250m
+  #       -Dport=9009
+  #       -Dprofile=${PROFILE}
+  #       -DappName=collateral-reports
+  #       -DgatewayEnabled=false
+  #       -DgatewayV2Enabled=true
+  #       -Dspring.cloud.config.uri=http://${LOCAL_DOCKER_HOST}:7000/config
+  #       -DconsulHost=${LOCAL_DOCKER_HOST}
+  #       -DgatewayURL=http://${LOCAL_DOCKER_HOST}
+  #       -Dspring.cloud.consul.discovery.health-check-path=/info
+  #       -Dspring.cloud.consul.discovery.ipAddress=${LOCAL_DOCKER_HOST}
+  #       -Dspring.cloud.consul.discovery.preferIpAddress=true
+  #       -Dspring.jpa.properties.hibernate.hbm2ddl.auto=update"
+        
+  #collateral-statements:
+    #image: artifacts.calypso.com:18180/calypso/statement-service:${STATEMENT_SERVICE_VERSION}
+    #container_name: statement
+    #ports:
+    #- "9008:8080"
+    #environment:
+    #  - "CATALINA_OPTS=
+    #    -Xmx250m
+    #    -Dport=9009
+    #    -Dprofile=${PROFILE}
+    #    -DappName=statement
+    #    -DgatewayEnabled=false
+    #    -DgatewayV2Enabled=true
+    #    -Dspring.cloud.config.uri=http://${LOCAL_DOCKER_HOST}:7000/config
+    #    -DconsulHost=${LOCAL_DOCKER_HOST}
+    #    -DgatewayURL=http://${LOCAL_DOCKER_HOST}
+    #    -Dspring.cloud.consul.discovery.health-check-path=/info
+    #    -Dspring.cloud.consul.discovery.ipAddress=${LOCAL_DOCKER_HOST}
+    #    -Dspring.cloud.consul.discovery.preferIpAddress=true
+    #    -Dspring.jpa.properties.hibernate.hbm2ddl.auto=update"
+        
+  #user-preferences:
+  #  image: artifacts.calypso.com:5000/calypso/user-preferences-service:1.0.0-SNAPSHOT
+  #  container_name: user-preferences
+  #  ports:
+  #  - "9027:8080"
+  #  environment:
+  #    - "CATALINA_OPTS=
+  #      -Xmx250m
+  #      -Dport=9027
+  #      -Dprofile=${PROFILE}
+  #      -DappName=user-preferences
+  #      -DgatewayEnabled=false
+  #      -DgatewayV2Enabled=true
+  #      -Dspring.cloud.config.uri=http://${LOCAL_DOCKER_HOST}:7000/config
+  #      -DconsulHost=${LOCAL_DOCKER_HOST}
+  #      -DgatewayURL=http://${LOCAL_DOCKER_HOST}
+  #      -Dspring.cloud.consul.discovery.health-check-path=/info
+  #      -Dspring.cloud.consul.discovery.ipAddress=${LOCAL_DOCKER_HOST}
+  #      -Dspring.cloud.consul.discovery.preferIpAddress=true"
+
+  # collateral-position:
+    # image: artifacts.calypso.com:18180/calypso/collateral-position-service:${POSITIONS_SERVICE_VERSION}
+    # container_name: collateral-position
+    # ports:
+    # - "9011:8080"
+    # environment:
+      # - "CATALINA_OPTS=
+        # -Xmx250m
+        # -Dport=9011
+        # -Dprofile=${PROFILE}
+        # -DappName=collateral-position
+        # -DgatewayEnabled=false
+        # -DgatewayV2Enabled=false
+        # -Dspring.cloud.config.uri=http://${LOCAL_DOCKER_HOST}:7000/config
+        # -DgatewayURL=http://${LOCAL_DOCKER_HOST}
+        # -Dkafka.topics.mcnotifications.bootstrap.host=${LOCAL_DOCKER_HOST}
+        # -Dspring.jpa.properties.hibernate.hbm2ddl.auto=update
+        # -Dspring.datasource.url=jdbc:postgresql://${LOCAL_DOCKER_HOST}:5432/position
+        # -DcalypsoCloudApp=true"
+        

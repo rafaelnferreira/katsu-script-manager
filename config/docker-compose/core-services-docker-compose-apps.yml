@@ -1,0 +1,106 @@
+version: '2'
+services:
+  # referencedata:
+    # image: artifacts.calypso.com:18180/calypso/fo-referencedata-service:${REF_SERVICE_VERSION}
+    # container_name: referencedata
+    # ports:
+    # - "9001:8080"
+    # environment:
+      # - "CATALINA_OPTS=
+          # -Xmx1g
+          # -Dport=9001
+          # -Dprofile=${PROFILE}
+          # -DappName=referencedata
+          # -DgatewayEnabled=false
+          # -DgatewayV2Enabled=false
+          # -Dspring.cloud.config.uri=http://${LOCAL_DOCKER_HOST}:7000/config
+          # -DconsulHost=${LOCAL_DOCKER_HOST}
+          # -DgatewayURL=http://${LOCAL_DOCKER_HOST}
+          # -Dspring.datasource.url=jdbc:postgresql://${LOCAL_DOCKER_HOST}:5432/referencedata"
+
+  # marketdata:
+    # image: artifacts.calypso.com:18180/calypso/marketdata-service:${MARKET_SERVICE_VERSION}
+    # container_name: marketdata
+    # ports:
+    # - "9003:8080"
+    # environment:
+      # - "CATALINA_OPTS=
+        # -Xmx1g
+        # -Dport=9003
+        # -Dprofile=${PROFILE}
+        # -DappName=marketdata
+        # -DgatewayEnabled=false
+        # -DgatewayV2Enabled=false
+        # -Dspring.cloud.config.uri=http://${LOCAL_DOCKER_HOST}:7000/config
+        # -DconsulHost=${LOCAL_DOCKER_HOST}
+        # -DgatewayURL=http://${LOCAL_DOCKER_HOST}
+        # -Dspring.datasource.url=jdbc:postgresql://${LOCAL_DOCKER_HOST}:5432/marketdata"
+        
+  # pricing:
+    # image: artifacts.calypso.com:18180/calypso/pricing-service:${PRICING_SERVICE_VERSION}
+    # container_name: pricing
+    # ports:
+    # - "9007:8080"
+    # environment:
+      # - "CATALINA_OPTS=
+        # -Xmx1g
+        # -Dport=9007
+        # -Dprofile=${PROFILE}
+        # -DappName=pricing
+        # -DgatewayEnabled=false
+        # -DgatewayV2Enabled=false
+        # -Dspring.cloud.config.uri=http://${LOCAL_DOCKER_HOST}:7000/config
+        # -DconsulHost=${LOCAL_DOCKER_HOST}
+        # -DgatewayURL=http://${LOCAL_DOCKER_HOST}"
+
+#replacement for pricing marketdata referencedata
+  # core:
+    # image: artifacts.calypso.com:18180/calypso/core-data-service:3.1.0-SNAPSHOT
+    # container_name: core
+    # ports:
+    # - "8030:8080"
+    # environment:
+      # - "CATALINA_OPTS=
+        # -Xmx500m
+        # -DcalypsoCloudApp=true
+        # -Dprofile=${PROFILE}
+        # -DappName=core
+        # -DgatewayEnabled=false
+        # -DgatewayV2Enabled=false
+        # -Dspring.cloud.config.uri=http://${LOCAL_DOCKER_HOST}:7000/config
+        # -DgatewayURL=http://${LOCAL_DOCKER_HOST}
+        # -Dspring.datasource.url=jdbc:postgresql://${LOCAL_DOCKER_HOST}:5432/core"
+
+  scheduler:
+    image: artifacts.calypso.com:18180/calypso/scheduler-service:${SCHEDULER_SERVICE_VERSION}
+    container_name: scheduler
+    ports:
+    - "9020:8080"
+    environment:
+      - "CATALINA_OPTS=
+        -Xmx500m
+        -Dport=9020
+        -Dprofile=${PROFILE}
+        -DappName=scheduler
+        -DgatewayEnabled=false
+        -DgatewayV2Enabled=false
+        -Dspring.cloud.config.uri=http://${LOCAL_DOCKER_HOST}:7000/config
+        -DgatewayURL=http://${LOCAL_DOCKER_HOST}
+        -Dspring.datasource.url=jdbc:postgresql://${LOCAL_DOCKER_HOST}:5432/scheduler"
+  
+  # coreservices-ui:
+    # image: artifacts.calypso.com:5000/calypso/frontoffice-coreservices-webui:1.5.1
+    # container_name: coreservices-ui
+    # mem_limit: 256m
+    # environment:
+      # - APPNAME=coreservices-ui
+      # - "CATALINA_OPTS= -Xmx256m -XX:MaxMetaspaceSize=128m
+        # -Dprofile=default
+        # -DappName=pricing
+        # -DgatewayEnabled=false
+        # -DgatewayV2Enabled=false
+        # -Dspring.cloud.config.uri=http://${LOCAL_DOCKER_HOST}/config-server/config
+        # -DgatewayURL=http://${LOCAL_DOCKER_HOST}"
+    # ports:
+      # - 4210:8080
+

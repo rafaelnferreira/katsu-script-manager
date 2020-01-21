@@ -1,0 +1,98 @@
+version: '3.6'
+services:
+  # nginx:
+    # image: artifacts.calypso.com:18180/calypso/calypso-nginx:0.1.0-SNAPSHOT
+    # container_name: nginx
+    # links:
+    # - consul
+    # ports:
+    # - "8443:443"
+    # - "80:80"
+    # labels:
+      # SERVICE_IGNORE: 'yes'
+    # environment:
+    # - "consuladdr=consul:8500"
+
+  # consul:
+    # image: consul:1.0.6
+    # container_name: consul
+    # labels:
+      # SERVICE_IGNORE: 'yes'
+    # ports:
+    # - "8500:8500"
+
+  # consul-kv:
+    # image: consul:1.0.6
+    # container_name: consul-kv
+    # command:
+    # - /bin/sh
+    # - -ec
+    # - |
+      # curl --request PUT --data '{ "ID": "ui1", "Name": "collateral-ui", "Address": "${LOCAL_DOCKER_HOST}", "Port": 4200}' http://consul:8500/v1/agent/service/register
+      # /bin/consul kv put -http-addr consul:8500 oidcDiscoveryUrl  https://login.testcloud.calypso.com/SecureAuth11/.well-known/openid-configuration/
+      # /bin/consul kv put -http-addr consul:8500 oidcUserInfoUrl https://172.17.0.1:9031/idp/userinfo.openid
+      # /bin/consul kv put -http-addr consul:8500 clientId 86409b5e04cc4ab4a33fcfca526eabef
+      # /bin/consul kv put -http-addr consul:8500 clientSecret b5f7386a9c882564c263800b5e336121441099e9d928bf9949eff56bf1a00960
+    # depends_on:
+    # - consul
+    # links:
+    # - consul
+    
+  nginx:
+    image:  calypsolon/nginx:${CALYPSOLON_NGINX}
+    container_name: nginx
+    ports:
+     - "80:80"
+    environment:
+     - "API_SERVER=${LOCAL_DOCKER_HOST}"
+    
+  config-server:
+    image: artifacts.calypso.com:18180/calypso/calypso-config-server:1.0.0-SNAPSHOT
+    container_name: config-server
+    ports:
+    - "7000:8080"
+    container_name: config-server
+
+    environment:
+    - "CATALINA_OPTS=-Xmx200m -Dport=7000 -DrepoURL=file:///tmp/git-config-repo"
+        #-DrepoURL=http://git.calypso.com/group/architecture/cloud-config
+        #-Dspring.cloud.config.server.git.username=root
+        #-Dspring.cloud.config.server.git.password=pass1234"
+    volumes:
+        - ${LOCAL_CONFIG_REPO}:/tmp/git-config-repo
+
+  kafka:
+    image: calypsolon/kafka
+    container_name: kafka
+    ports:
+    - "2181:2181"
+    - "9092:9092"
+    environment:
+    - ADVERTISED_HOST=${LOCAL_DOCKER_HOST}
+    - ADVERTISED_PORT=9092
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=postgress
+    - POSTGRES_DB=postgres
+    ports:
+    - "5432:5432"
+    volumes:
+    - pgdata:/var/lib/postgresql/data
+    
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+    - PGADMIN_DEFAULT_EMAIL=${USER_EMAIL}
+    - PGADMIN_DEFAULT_PASSWORD=SuperSecret  
+    links:
+    - postgres
+    ports:
+    - "5050:80"
+
+volumes: 
+  pgdata:
