@@ -83,6 +83,9 @@ function createDockerCommand() {
     console.log(commandList);
     // pushing the commands list to the status class
     commandList.forEach((value, key) => applicationStatus.commands.cmd.push({serviceName: key, active: false}));
+
+    return commandList;
 }
 
 exports.logsFolder = logsFolder;
+exports.commandsList= commandsList;
