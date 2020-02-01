@@ -1,10 +1,11 @@
 {
-  "name": "microservices",
+  "name": "katsu-script-manager",
   "version": "1.0.0",
   "description": "",
-  "main": "src/app.js",
+  "main": "dist/app.js",
   "scripts": {
-    "start": "node src/app.js"
+    "build": "tsc",
+    "start": "npm run build && node dist/app.js"
   },
   "author": "Silvio Piccolo",
   "license": "ISC",
@@ -13,7 +14,12 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "fs-extra": "^8.1.0",
-    "hbs": "^4.0.6",
-    "simple-node-logger": "^18.12.24"
+    "hbs": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.2",
+    "@types/node": "^13.7.0",
+    "tslint": "^6.0.0",
+    "typescript": "^3.7.5"
   }
 }
