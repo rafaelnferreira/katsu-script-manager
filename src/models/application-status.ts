@@ -4,8 +4,8 @@ import { ActiveService } from "./active-service";
 export class ApplicationStatus {
     config: Config;
     commands: {cmd: ActiveService[]};
-    runningServicesProcesses;
-    runningImages;
+    runningServicesProcesses: Map<string, any>;
+    runningImages: Set<string>;
 
     constructor(config: Config){
         this.config = config;

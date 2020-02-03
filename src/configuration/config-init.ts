@@ -19,7 +19,11 @@ export class ConfigInit {
         }
         fs.mkdirSync(this.applicationStatus.config.tempFolder);
         
-       this.applicationStatus.commands = {cmd:new Array<ActiveService>()};
+        this.applicationStatus.commands = {cmd:new Array<ActiveService>()};
+        this.applicationStatus.runningServicesProcesses = new Map<string, any>();
+        this.applicationStatus.runningImages = new Set<string>();
+
+        
         this.applicationStatus.config.environmentVariables = this.buildConfigVariables();
         this.createTempDockerFiles();
         this.applicationStatus.config.commandsList = this.createDockerCommand();
