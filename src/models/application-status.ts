@@ -1,10 +1,9 @@
 import {Config} from "./config";
+import { ActiveService } from "./active-service";
 
 export class ApplicationStatus {
     config: Config;
-    commands: {
-        cmd: [{serviceName: string, active: boolean}]
-    };
+    commands: {cmd: ActiveService[]};
     runningServicesProcesses;
     runningImages;
 

@@ -1,8 +1,9 @@
-import {Config} from "../models/config";
 import * as fs from 'fs-extra';
 import {ActionService} from "../services/action.service";
 import {ApplicationStatus} from "../models/application-status";
 import * as dotenv from 'dotenv';
+import {Util} from '../util/util';
+import { ActiveService } from '../models/active-service';
 
 
 export class ConfigInit {
@@ -12,11 +13,18 @@ export class ConfigInit {
     }
 
     init(): void {
-        this.createTempDockerFiles();
-        this.applicationStatus.config = new Config();
-        this.applicationStatus.config.commandsList = this.createDockerCommand();
+        // prepare the temp folder for the new yml files
+        if (fs.existsSync(this.applicationStatus.config.tempFolder)) {
+            fs.removeSync(this.applicationStatus.config.tempFolder);
+        }
+        fs.mkdirSync(this.applicationStatus.config.tempFolder);
+        
+       this.applicationStatus.commands = {cmd:new Array<ActiveService>()};
         this.applicationStatus.config.environmentVariables = this.buildConfigVariables();
-
+        this.createTempDockerFiles();
+        this.applicationStatus.config.commandsList = this.createDockerCommand();
+        
+        
     }
 
     /**
@@ -24,19 +32,12 @@ export class ConfigInit {
      */
     buildConfigVariables(): any {
         const env = dotenv.config().parsed;
-
-        //env['HOSTNAME'] = Util.executeBashCommand('hostname').replace('\n', '');
-        //env['LOCAL_DOCKER_HOST'] = Util.executeBashCommand('hostname -I | awk \'{print $1}\'').replace('\n', '');
+        env['HOSTNAME'] = Util.executeBashCommand('hostname').replace('\n', '');
+        env['LOCAL_DOCKER_HOST'] = Util.executeBashCommand('hostname -I | awk \'{print $1}\'').replace('\n', '');
         return env;
     }
 
     createTempDockerFiles(): void {
-        // prepare the temp folder for the new yml files
-        if (fs.existsSync(this.applicationStatus.config.tempFolder)) {
-            fs.removeSync(this.applicationStatus.config.tempFolder);
-        }
-
-        fs.mkdirSync(this.applicationStatus.config.tempFolder);
         setTimeout(() => fs.mkdirSync(this.applicationStatus.config.logsFolder), 0); //creating the logs folder
 
         const files = fs.readdirSync(this.applicationStatus.config.dockerComposeFolder);
@@ -82,9 +83,10 @@ export class ConfigInit {
             commandListSet.forEach(c => commandList.set(c.slice(c.lastIndexOf(' ') + 1), c));
         });
         console.log(commandList);
+
         // pushing the commands list to the status class
         commandList.forEach((value, key) => this.applicationStatus.commands.cmd.push({serviceName: key, active: false}));
-
+        
         return commandList;
     }
 }
