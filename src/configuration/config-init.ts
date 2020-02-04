@@ -78,7 +78,7 @@ export class ConfigInit {
             contents = contents
                 .filter(c => c.includes('container_name'))
                 .map(c => c.slice(c.search(':') + 1, c.length).replace('"', '').trim())
-                .map(c => 'docker-compose -f ' + __dirname + '/../~tmp/' + file + ' up ' + c);
+                .map(c => 'docker-compose -f ' + __dirname + '/../../~tmp/' + file + ' up ' + c);
 
             // delete duplicates
             contents.forEach((c) => commandListSet.add(c));

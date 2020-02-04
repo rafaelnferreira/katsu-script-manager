@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import * as process from 'child_process';
+import {ChildProcess, spawn, spawnSync} from 'child_process';
 
 import {ApplicationStatus} from "../models/application-status";
 
@@ -23,7 +23,7 @@ export class ActionService {
             const fileLogName = this.applicationStatus.config.logsFolder + serviceName + '.log';
             const logStream = fs.createWriteStream(fileLogName, { flags: 'a' });
 
-            const runningServiceProcess = process.spawn(c, {
+            const runningServiceProcess = spawn(c, {
                 shell: true //otherwise crashes
             });
 
@@ -34,8 +34,6 @@ export class ActionService {
 
             // we set the terminal id and the name of the running service associated with the terminal
             this.applicationStatus.runningImages.add(serviceName);
-
-
         });
 
         // set the services to be active for the UI
@@ -56,7 +54,7 @@ export class ActionService {
         const runningInstance = this.applicationStatus.runningServicesProcesses.get(serviceName);
 
         //bring down the service
-        process.spawnSync('docker stop ' + serviceName, {
+        spawnSync('docker stop ' + serviceName, {
             shell: true
         });
 
