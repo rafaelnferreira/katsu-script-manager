@@ -8,7 +8,7 @@ import { ActiveService } from '../models/active-service';
 
 export class ConfigInit {
 
-    constructor(private actionService: ActionService, private applicationStatus: ApplicationStatus) {
+    constructor(private applicationStatus: ApplicationStatus) {
         this.init();
     }
 
@@ -18,17 +18,10 @@ export class ConfigInit {
             fs.removeSync(this.applicationStatus.config.tempFolder);
         }
         fs.mkdirSync(this.applicationStatus.config.tempFolder);
-        
-        this.applicationStatus.commands = {cmd:new Array<ActiveService>()};
-        this.applicationStatus.runningServicesProcesses = new Map<string, any>();
-        this.applicationStatus.runningImages = new Set<string>();
-
-        
         this.applicationStatus.config.environmentVariables = this.buildConfigVariables();
         this.createTempDockerFiles();
         this.applicationStatus.config.commandsList = this.createDockerCommand();
-        
-        
+        this.applicationStatus.scriptsNames = this.findScripts();
     }
 
     /**
@@ -92,5 +85,12 @@ export class ConfigInit {
         commandList.forEach((value, key) => this.applicationStatus.commands.cmd.push({serviceName: key, active: false}));
         
         return commandList;
+    }
+
+
+    public findScripts(): string[] {
+        const files: string[] = fs.readdirSync(this.applicationStatus.config.scriptsFolder, 'utf8');
+        const filteredFiles = files.filter(f => f.includes('.bash') || f.includes('.bat'));
+        return filteredFiles;
     }
 }

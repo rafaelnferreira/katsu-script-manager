@@ -1,7 +1,6 @@
 import * as fs from 'fs';
-import {ChildProcess, spawn, spawnSync} from 'child_process';
-
 import {ApplicationStatus} from "../models/application-status";
+import { Util } from '../util/util';
 
 
 export class ActionService {
@@ -23,9 +22,7 @@ export class ActionService {
             const fileLogName = this.applicationStatus.config.logsFolder + serviceName + '.log';
             const logStream = fs.createWriteStream(fileLogName, { flags: 'a' });
 
-            const runningServiceProcess = spawn(c, {
-                shell: true //otherwise crashes
-            });
+            const runningServiceProcess = Util.spawn(c);
 
             runningServiceProcess.stdout.pipe(logStream); //attaching the output of the child console to a file
 
@@ -47,16 +44,14 @@ export class ActionService {
 
     }
 
-    altImages(serviceName) {
+    altImages(serviceName): void {
 
         const fileLogName = this.applicationStatus.config.logsFolder + serviceName + '.log';
 
         const runningInstance = this.applicationStatus.runningServicesProcesses.get(serviceName);
 
         //bring down the service
-        spawnSync('docker stop ' + serviceName, {
-            shell: true
-        });
+        Util.spawnSync('docker stop ' + serviceName);
 
         runningInstance.kill();
         // removing the running images
@@ -70,5 +65,27 @@ export class ActionService {
         this.applicationStatus.commands.cmd[imageIdx].active = false;
 
         setTimeout(() => fs.appendFileSync(fileLogName, 'PROCESS TERMINATED'), 0);
+    }
+
+    runScript(scriptName: string, args?: string[] ): boolean {
+        const matchedScriptFile = this.applicationStatus.scriptsNames.find((s) => s === scriptName);
+
+        if(matchedScriptFile) {
+            const scriptProc = Util.execFile(this.applicationStatus.config.scriptsFolder + scriptName, args);
+
+            scriptProc.stdout.on('data', (data) => {
+                console.log(data.toString());
+            });
+            
+            scriptProc.stderr.on('data', (err) => {
+                console.log(err.toString());
+            });
+            
+            scriptProc.on('close', (code) => {
+                console.log("close");
+            });
+            return true;
+        }
+        return false;
     }
 }

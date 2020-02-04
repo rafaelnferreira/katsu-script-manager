@@ -6,18 +6,17 @@ import * as bodyParser from 'body-parser';
 import {ApplicationStatus} from "./models/application-status";
 import {ActionService} from "./services/action.service";
 import {ConfigInit} from "./configuration/config-init";
-import {Config} from "./models/config";
 
 const server = express();
-const port = 3000;
+const port = 3001;
 
 server.set('view engine', 'hbs');
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
 
-export const applicationStatus: ApplicationStatus = new ApplicationStatus(new Config());
+export const applicationStatus: ApplicationStatus = new ApplicationStatus();
 export const actionService: ActionService = new ActionService(applicationStatus);
-new ConfigInit(actionService, applicationStatus);
+new ConfigInit(applicationStatus);
 
 server.get('/', (req, res) => {
     res.render('overview', applicationStatus.commands);
@@ -44,6 +43,14 @@ server.get('/alt-service/:serviceName', (req, res) => {
     actionService.altImages(serviceName);
 
     res.render('overview', applicationStatus.commands);
+});
+
+
+server.post('/run-script/:scriptName', (req, res) => {
+    const args = req.body;
+
+    const isRunning = actionService.runScript(req.params.scriptName, args);
+    isRunning ? res.sendStatus(200) : res.sendStatus(404);
 });
 
 server.listen(port, () => console.log(`Microservices server started on port ${port}`));

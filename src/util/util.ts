@@ -9,4 +9,20 @@ export class Util{
         const result = process.execSync(command);
         return result.toString();
     }
+
+    static spawn(command: string): process.ChildProcess {
+       return process.spawn(command, {
+            shell: true
+        });
+    }
+
+    static spawnSync(command: string): process.SpawnSyncReturns<Buffer> {
+        return process.spawnSync(command, {
+             shell: true
+         });
+     }
+
+     static execFile(fileName: string, args?: string[]): process.ChildProcess {
+        return process.execFile(fileName, args);
+     }
 }
