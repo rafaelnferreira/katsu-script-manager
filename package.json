@@ -2,10 +2,11 @@
   "name": "katsu-script-manager",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/app.js",
+  "main": "dist/src/app.js",
   "scripts": {
     "build": "tsc",
-    "start": "npm run build && node dist/app.js"
+    "start": "npm run build && node dist/src/app.js",
+    "package": "npm run build && zip -r katsu-script-manager.zip dist"
   },
   "author": "Silvio Piccolo",
   "license": "ISC",
