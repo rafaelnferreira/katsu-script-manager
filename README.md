@@ -86,14 +86,14 @@ MY-DOCKER-PORT=0000
 ```
 
 ## Running it
-### To run the application, on the root execute the command
+
+### To run the application, on the root execute the command
 
 ```bash
 $ npm start
 ```
 
 Launch a web browser at `http://localhost:3001` 
-
 
 ## Output
 
