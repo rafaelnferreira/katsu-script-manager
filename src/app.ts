@@ -1,14 +1,14 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import * as express from "express";
-import * as bodyParser from 'body-parser';
+import express from "express";
+import bodyParser from 'body-parser';
 import {ApplicationStatus} from "./models/application-status";
 import {ActionService} from "./services/action.service";
 import {ConfigInit} from "./configuration/config-init";
 
 const server = express();
-const port = 3001;
+const port = process.env.PORT || 3000 ;
 
 server.set('view engine', 'hbs');
 server.use(bodyParser.urlencoded({ extended: true }));
@@ -30,7 +30,7 @@ server.post('/spin-up-image', (req, res) => {
 });
 
 // app.get('/read-logs/:serviceName', (req, res) => {
-//     const fileLogName = config.logsFolder + req.params.serviceName + '.log';
+//     const fileLogName = config.dockerLogsFolder + req.params.serviceName + '.log';
 //     const tail = spawn('tail', ['-f', fileLogName]);
 
 //     tail.stdout.on('data', function (data) {
@@ -51,6 +51,12 @@ server.post('/run-script/:scriptName', (req, res) => {
 
     const isRunning = actionService.runScript(req.params.scriptName, args);
     isRunning ? res.sendStatus(200) : res.sendStatus(404);
+});
+
+
+server.post('/exec-job', (req, res) => {
+    actionService.executeJob(req.body);
+    res.sendStatus(200);
 });
 
 server.listen(port, () => console.log(`Microservices server started on port ${port}`));

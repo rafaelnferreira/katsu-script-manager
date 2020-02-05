@@ -1,4 +1,5 @@
 import * as process from 'child_process';
+import * as fs from 'fs';
 
 export class Util{
     /**
@@ -25,5 +26,11 @@ export class Util{
      static execFile(fileName: string, args?: string[]): process.ChildProcess {
         console.debug(`Running script: ${fileName}, with args: ${args}`)
         return process.execFile(fileName, args);
+     }
+
+     static tailLogsToFile(fileName: string, process: process.ChildProcess ) {
+        const fileLogName = fileName + '.log';
+        const logStream = fs.createWriteStream(fileLogName, { flags: 'a' });
+        process.stdout.pipe(logStream); //attaching the output of the child console to a file
      }
 }

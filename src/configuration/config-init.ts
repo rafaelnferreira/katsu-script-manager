@@ -17,6 +17,12 @@ export class ConfigInit {
         if (fs.existsSync(this.applicationStatus.config.tempFolder)) {
             fs.removeSync(this.applicationStatus.config.tempFolder);
         }
+
+        // prepare the folder for the scripts logs
+        if (!fs.existsSync(this.applicationStatus.config.scriptsLogsFolder)) {
+            fs.mkdirSync(this.applicationStatus.config.scriptsLogsFolder);
+        }
+
         fs.mkdirSync(this.applicationStatus.config.tempFolder);
         this.applicationStatus.config.environmentVariables = this.buildConfigVariables();
         this.createTempDockerFiles();
@@ -35,7 +41,7 @@ export class ConfigInit {
     }
 
     createTempDockerFiles(): void {
-        setTimeout(() => fs.mkdirSync(this.applicationStatus.config.logsFolder), 0); //creating the logs folder
+        setTimeout(() => fs.mkdirSync(this.applicationStatus.config.dockerLogsFolder), 0); //creating the logs folder
 
         const files = fs.readdirSync(this.applicationStatus.config.dockerComposeFolder);
 

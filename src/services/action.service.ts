@@ -1,7 +1,8 @@
 import * as fs from 'fs';
 import {ApplicationStatus} from "../models/application-status";
 import { Util } from '../util/util';
-
+import {JobsInput} from '../models/jobs-input';
+import jobsConfig from '../../config/jobs/jobs.config.json'; 
 
 export class ActionService {
 
@@ -19,12 +20,10 @@ export class ActionService {
 
         commandsToPerform.forEach((c) => {
             const serviceName = c.slice(c.lastIndexOf(' ') + 1);
-            const fileLogName = this.applicationStatus.config.logsFolder + serviceName + '.log';
-            const logStream = fs.createWriteStream(fileLogName, { flags: 'a' });
-
+            const fileLogName = this.applicationStatus.config.dockerLogsFolder + serviceName;
             const runningServiceProcess = Util.spawn(c);
 
-            runningServiceProcess.stdout.pipe(logStream); //attaching the output of the child console to a file
+            Util.tailLogsToFile(fileLogName, runningServiceProcess);
 
             //saving the process into a map, we can kill the process on altImages
             this.applicationStatus.runningServicesProcesses.set(serviceName, runningServiceProcess);
@@ -46,7 +45,7 @@ export class ActionService {
 
     altImages(serviceName): void {
 
-        const fileLogName = this.applicationStatus.config.logsFolder + serviceName + '.log';
+        const fileLogName = this.applicationStatus.config.dockerLogsFolder + serviceName + '.log';
 
         const runningInstance = this.applicationStatus.runningServicesProcesses.get(serviceName);
 
@@ -67,27 +66,33 @@ export class ActionService {
         setTimeout(() => fs.appendFileSync(fileLogName, 'PROCESS TERMINATED'), 0);
     }
 
-    runScript(scriptName: string, args?: string[] ): boolean {
-        
+    runScript(scriptName: string, args: string[], logsName?: string ): boolean {
         const matchedScriptFile = this.applicationStatus.scriptsNames.find((s) => s === scriptName);
 
         if(matchedScriptFile) {
-            const scriptProc = Util.execFile(`${this.applicationStatus.config.scriptsFolder}/${scriptName}`, args);
+            const scriptProc = Util.execFile(this.applicationStatus.config.scriptsFolder + scriptName, args);
+       
+            // organize logs in daily folders 
+            const todayFolder = new Date().getDay().toString() + '-' + new Date().getMonth().toString() + '-' + new Date().getFullYear().toString() + '/';
+            console.log(todayFolder)
 
-            scriptProc.stdout.on('data', (data) => {
-                console.log(data.toString());
-            });
+
+            if (!fs.existsSync(this.applicationStatus.config.scriptsLogsFolder + todayFolder)) {
+                fs.mkdirSync(this.applicationStatus.config.scriptsLogsFolder + todayFolder);
+            }
             
-            scriptProc.stderr.on('data', (err) => {
-                console.log(err.toString());
-            });
-            
-            scriptProc.on('close', (code) => {
-                console.log(code);
-                console.log("close");
-            });
+            const fileLogName = this.applicationStatus.config.scriptsLogsFolder + todayFolder + (logsName ? logsName + '-' + new Date().toLocaleTimeString() : 
+            scriptName + new Date().toLocaleTimeString());
+
+            Util.tailLogsToFile(fileLogName, scriptProc);
+
             return true;
         }
         return false;
+    }
+
+    executeJob(job: JobsInput) {
+        const applicableJobs = jobsConfig.filter(c => c.jobName === job.jobName && c.branch === job.branch);
+        applicableJobs.forEach(job => this.runScript(job.scriptName, job.args, job.name));
     }
 }
