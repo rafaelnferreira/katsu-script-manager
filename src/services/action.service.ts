@@ -68,10 +68,11 @@ export class ActionService {
     }
 
     runScript(scriptName: string, args?: string[] ): boolean {
+        
         const matchedScriptFile = this.applicationStatus.scriptsNames.find((s) => s === scriptName);
 
         if(matchedScriptFile) {
-            const scriptProc = Util.execFile(this.applicationStatus.config.scriptsFolder + scriptName, args);
+            const scriptProc = Util.execFile(`${this.applicationStatus.config.scriptsFolder}/${scriptName}`, args);
 
             scriptProc.stdout.on('data', (data) => {
                 console.log(data.toString());
@@ -82,6 +83,7 @@ export class ActionService {
             });
             
             scriptProc.on('close', (code) => {
+                console.log(code);
                 console.log("close");
             });
             return true;

@@ -23,6 +23,7 @@ export class Util{
      }
 
      static execFile(fileName: string, args?: string[]): process.ChildProcess {
+        console.debug(`Running script: ${fileName}, with args: ${args}`)
         return process.execFile(fileName, args);
      }
 }
