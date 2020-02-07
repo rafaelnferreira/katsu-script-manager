@@ -3,9 +3,10 @@ dotenv.config();
 
 import express from "express";
 import bodyParser from 'body-parser';
-import {ApplicationStatus} from "./models/application-status";
+import {ApplicationStatus} from "./types/application-status";
 import {ActionService} from "./services/action.service";
 import {ConfigInit} from "./configuration/config-init";
+import { initSequelize } from './configuration/sequelize.config';
 
 const server = express();
 const port = process.env.PORT || 3000 ;
@@ -13,6 +14,8 @@ const port = process.env.PORT || 3000 ;
 server.set('view engine', 'hbs');
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
+
+initSequelize();
 
 export const applicationStatus: ApplicationStatus = new ApplicationStatus();
 export const actionService: ActionService = new ActionService(applicationStatus);
