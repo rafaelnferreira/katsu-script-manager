@@ -18,34 +18,6 @@ export const applicationStatus: ApplicationStatus = new ApplicationStatus();
 export const actionService: ActionService = new ActionService(applicationStatus);
 new ConfigInit(applicationStatus);
 
-server.get('/', (req, res) => {
-    res.render('overview', applicationStatus.commands);
-});
-
-server.post('/spin-up-image', (req, res) => {
-    actionService.spinUpImages(req.body);
-
-    res.render('overview', applicationStatus.commands);
-
-});
-
-// app.get('/read-logs/:serviceName', (req, res) => {
-//     const fileLogName = config.dockerLogsFolder + req.params.serviceName + '.log';
-//     const tail = spawn('tail', ['-f', fileLogName]);
-
-//     tail.stdout.on('data', function (data) {
-//         res.write('' + data);
-//     });
-// });
-
-server.get('/alt-service/:serviceName', (req, res) => {
-    const serviceName = req.params.serviceName;
-    actionService.altImages(serviceName);
-
-    res.render('overview', applicationStatus.commands);
-});
-
-
 server.post('/run-script/:scriptName', (req, res) => {
     const args = req.body;
 
@@ -59,4 +31,4 @@ server.post('/exec-job', (req, res) => {
     res.sendStatus(200);
 });
 
-server.listen(port, () => console.log(`Microservices server started on port ${port}`));
+server.listen(port, () => console.log(`Katsu script server started on port ${port}`));
