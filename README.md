@@ -1,5 +1,14 @@
-# Docker Compose Manager
-A simple tool that allows management of docker.
+
+# Katsu Script Manager
+A simple automation tool that allows scripts to be configured and executed based on HTTP events.
+
+## Motivation
+We wanted to make our daily deployment process into development environments smoother and without manual intervention. We do love shell-scripting (and have tons of scripts), but managing these by hand based on various events still require too much manual intervention, therefore we  needed a tool that could capture these events (generally coming from the CI system), react to them based on the pre defined configuration, and perform the job.
+
+Our mantra is: *Focus on the solution, not in the tooling*.
+
+### Origin of the name
+The name was inspired by the team's favorite meal: The famous chicken katsu by ***** (venue's name ommited since they are not paying anything to us neither giving us free meals!).
 
 # Configure the workspace
 
@@ -30,8 +39,40 @@ You can define a `SCRIPT_FOLDER` variable in the `.env` file as well, otherwise 
 Any scripts found under the `SCRIPT_FOLDER` path can be invoked via http post. For example a script named `args.bash` can be executed with the parameters `1 2 3 4` using the following `POST`:
 
 ```bash
-curl -XPOST -H "Accept: application/json" -H "Content-Type: application/json" -d "[\"1\", \"2\", \"3\", \"4\"]" http://localhost:3001/run-script/args.bash
+curl -XPOST -H "Accept: application/json" -H "Content-Type: application/json" -d "[\"1\", \"2\", \"3\", \"4\"]" http://localhost:3000/run-script/args.bash
 ```
+
+#### Configuring jobs
+Navigate to the folder config/jobs and edit the file `jobs.config.json`.  e.g.
+```json
+[
+	{
+		"name": "DEPLOY_UI_DEV01",
+		"jobName": "WEBUI",
+		"branch": "FEAT-DEV-INTEGRATION",
+		"scriptName": "deploy.bash",
+		"args": ["--env", "dev01"]
+	}
+]
+``` 
+where:
+ - <b>name:</b> is an id for the job, this will be used as a name to the logs files
+ - <b>jobName</b>: the name of the job
+ - <b>branch</b>: the name of the branch to execute from
+ - <b>scriptName</b>: the name of the script to execute
+ - <b>args</b>: the args to be passed to the script
+
+#### Running jobs
+  ```bash
+curl -XPOST -H "Accept: application/json" -H "Content-Type: application/json" -d "{
+	"jobName":"WEBUI",
+	"branch": "FEAT-DEV-INTEGRATION"
+}" http://localhost:3000/exec-job
+```
+
+### Script logs
+Script logs can be found in the folder `scripts-logs/{CURRENT-DATE}`
+
 
 ### Setting up execution for docker-compose files
 Create and navigate to the folder `config/docker-compose/` at root level and add your docker-compose.yml files. An example of yml file:
@@ -85,7 +126,7 @@ MY-DOCKER-PORT=0000
 $ npm start
 ```
 
-Launch a web browser at `http://localhost:3001` 
+Launch a web browser at `http://localhost:3000` 
 
 ## Output
 
