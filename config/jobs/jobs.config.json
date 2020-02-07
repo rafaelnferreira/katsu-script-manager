@@ -1,9 +1,0 @@
-[
-    {
-        "name": "DEPLOY_UI_DEV01",
-        "jobName": "WEBUI",
-        "branch": "FEAT-DEV-INTEGRATION",
-        "scriptName": "deploy.bash",
-        "args": ["--env", "dev01"]
-    }
-]
