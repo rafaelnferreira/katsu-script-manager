@@ -1,9 +1,7 @@
 import * as fs from 'fs-extra';
-import {ActionService} from "../services/action.service";
 import {ApplicationStatus} from "../models/application-status";
 import * as dotenv from 'dotenv';
 import {Util} from '../util/util';
-import { ActiveService } from '../models/active-service';
 
 
 export class ConfigInit {
@@ -17,17 +15,11 @@ export class ConfigInit {
         if (fs.existsSync(this.applicationStatus.config.tempFolder)) {
             fs.removeSync(this.applicationStatus.config.tempFolder);
         }
-
-        // prepare the folder for the scripts logs
-        if (!fs.existsSync(this.applicationStatus.config.scriptsLogsFolder)) {
-            fs.mkdirSync(this.applicationStatus.config.scriptsLogsFolder);
-        }
-
         fs.mkdirSync(this.applicationStatus.config.tempFolder);
+
         this.applicationStatus.config.environmentVariables = this.buildConfigVariables();
         this.createTempDockerFiles();
         this.applicationStatus.config.commandsList = this.createDockerCommand();
-        this.applicationStatus.scriptsNames = this.findScripts();
     }
 
     /**
@@ -91,12 +83,5 @@ export class ConfigInit {
         commandList.forEach((value, key) => this.applicationStatus.commands.cmd.push({serviceName: key, active: false}));
         
         return commandList;
-    }
-
-
-    public findScripts(): string[] {
-        const files: string[] = fs.readdirSync(this.applicationStatus.config.scriptsFolder, 'utf8');
-        const filteredFiles = files.filter(f => f.includes('.bash') || f.includes('.bat'));
-        return filteredFiles;
     }
 }
