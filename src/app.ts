@@ -45,18 +45,4 @@ server.get('/alt-service/:serviceName', (req, res) => {
     res.render('overview', applicationStatus.commands);
 });
 
-
-server.post('/run-script/:scriptName', (req, res) => {
-    const args = req.body;
-
-    const isRunning = actionService.runScript(req.params.scriptName, args);
-    isRunning ? res.sendStatus(200) : res.sendStatus(404);
-});
-
-
-server.post('/exec-job', (req, res) => {
-    actionService.executeJob(req.body);
-    res.sendStatus(200);
-});
-
 server.listen(port, () => console.log(`Microservices server started on port ${port}`));
