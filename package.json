@@ -4,9 +4,10 @@
   "description": "",
   "main": "dist/src/app.js",
   "scripts": {
+    "clean": "rm -rf dist",
     "build": "tsc",
     "start": "npm run build && node dist/src/app.js",
-    "package": "npm run build && zip -r katsu-script-manager.zip dist"
+    "package": "npm run build && zip -r dist/katsu-script-manager.zip dist --exclude \"*.map\" && zip -r dist/katsu-script-manager.zip node_modules "
   },
   "author": "Silvio Piccolo",
   "license": "ISC",
