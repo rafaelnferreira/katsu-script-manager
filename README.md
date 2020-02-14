@@ -75,7 +75,7 @@ Add the following envs to connect to the database
 POSTGRES_DATABASE =database
 POSTGRES_USERNAME =username
 POSTGRES_PASSWORD =password
-POSTRES_HOST =host
+POSTGRES_HOST =host
 ```
 
   
