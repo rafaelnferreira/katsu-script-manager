@@ -30,24 +30,24 @@ export function initSequelize(): Sequelize {
 
     const sequelize = new Sequelize(options);
 
-    // // order important here:
-    // // 1. before define
-    // // 2. before create
-    // // 3. add models
-    // // 4. authenticate
-    // // 5. synchronise with database
+    // order important here:
+    // 1. before define
+    // 2. before create
+    // 3. add models
+    // 4. authenticate
+    // 5. synchronise with database
 
-    // sequelize.beforeDefine((attributes: any) => {
-    //     Object.keys(attributes).forEach((key) => {
-    //         // typeof check provided by @devalnor
-    //         if (typeof attributes[key] !== "function") {
-    //             attributes[key].field = decamelize(key);
-    //         }
-    //     });
-    // });
+    sequelize.beforeDefine((attributes: any) => {
+        Object.keys(attributes).forEach((key) => {
+            // typeof check provided by @devalnor
+            if (typeof attributes[key] !== "function") {
+                attributes[key].field = decamelize(key);
+            }
+        });
+    });
 
-    // sequelize.addModels(models);
-    // sequelize.authenticate();
+    sequelize.addModels(models);
+    sequelize.authenticate();
 
     return sequelize;
 }
