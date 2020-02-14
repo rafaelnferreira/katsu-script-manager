@@ -17,7 +17,7 @@ export class ConfigInit {
     }
 
     public findScripts(): string[] {
-        const files: string[] = fs.readdirSync(__dirname + '/../../../config/scripts/', 'utf8');
+        const files: string[] = fs.readdirSync(this.applicationStatus.config.scriptsFolder, 'utf8');
         const filteredFiles = files.filter(f => f.includes('.bash') || f.includes('.bat'));
         return filteredFiles;
     }

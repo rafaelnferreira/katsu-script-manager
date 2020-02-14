@@ -23,14 +23,15 @@ export class Util{
          });
      }
 
-     static execFile(fileName: string, args?: string[]): process.ChildProcess {
+     static execFile(fileName: string, args?: string[], executionFolder?: string): process.ChildProcess {
         console.debug(`Running script: ${fileName}, with args: ${args}`)
-        return process.execFile(fileName, args);
+        return process.execFile(fileName, args, {cwd: executionFolder});
      }
 
      static tailLogsToFile(fileName: string, process: process.ChildProcess ) {
         const fileLogName = fileName + '.log';
         const logStream = fs.createWriteStream(fileLogName, { flags: 'a' });
         process.stdout.pipe(logStream); //attaching the output of the child console to a file
+        process.stderr.pipe(logStream)
      }
 }

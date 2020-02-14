@@ -3,6 +3,7 @@ import {ApplicationStatus} from "../types/application-status";
 import { Util } from '../util/util';
 import {JobsInput} from '../types/jobs-input';
 import jobsConfig from '../../config/jobs/jobs.config.json'; 
+import moment from 'moment';
 
 export class ActionService {
 
@@ -12,10 +13,10 @@ export class ActionService {
         const matchedScriptFile = this.applicationStatus.scriptsNames.find((s) => s === scriptName);
 
         if(matchedScriptFile) {
-            const scriptProc = Util.execFile(this.applicationStatus.config.scriptsFolder + scriptName, args);
+            const scriptProc = Util.execFile(`${this.applicationStatus.config.scriptsFolder}/${scriptName}`, args, this.applicationStatus.config.scriptsFolder);
        
             // organize logs in daily folders 
-            const todayFolder = new Date().getDay().toString() + '-' + new Date().getMonth().toString() + '-' + new Date().getFullYear().toString() + '/';
+            const todayFolder = moment().format('YYYYMMDD')
             console.log(todayFolder)
 
 
@@ -23,8 +24,10 @@ export class ActionService {
                 fs.mkdirSync(this.applicationStatus.config.scriptsLogsFolder + todayFolder);
             }
             
-            const fileLogName = this.applicationStatus.config.scriptsLogsFolder + todayFolder + (logsName ? logsName + '-' + new Date().toLocaleTimeString() : 
-            scriptName + new Date().toLocaleTimeString());
+            const timeStamp = moment().format('HHmmss');
+
+            const fileLogName = this.applicationStatus.config.scriptsLogsFolder + todayFolder + '/' +
+             (logsName ? logsName + '-' + timeStamp : scriptName + timeStamp);
 
             Util.tailLogsToFile(fileLogName, scriptProc);
 
