@@ -1,6 +1,7 @@
 import * as process from 'child_process';
 import * as fs from 'fs';
-
+import {logger} from './../app';
+ 
 export class Util{
     /**
      * Executes the command passed and returns the result as a string
@@ -24,7 +25,7 @@ export class Util{
      }
 
      static execFile(fileName: string, args?: string[], executionFolder?: string): process.ChildProcess {
-        console.debug(`Running script: ${fileName}, with args: ${args}`)
+        logger.debug(`Running script: ${fileName}, with args: ${args}`)
         return process.execFile(fileName, args, {cwd: executionFolder});
      }
 

@@ -7,6 +7,7 @@ import {ApplicationStatus} from "./types/application-status";
 import {ActionService} from "./services/action.service";
 import {ConfigInit} from "./configuration/config-init";
 import { initSequelize } from './configuration/sequelize.config';
+import { configure, getLogger } from 'log4js';
 
 const server = express();
 const port = process.env.PORT || 3000 ;
@@ -16,6 +17,17 @@ server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
 
 initSequelize();
+
+export const logger = getLogger();
+logger.level = 'debug';
+
+configure({
+    appenders: {
+      console: { type: 'console' }
+    },
+    categories: {
+      default: { appenders: ['console'], level: 'debug' }}
+  });
 
 export const applicationStatus: ApplicationStatus = new ApplicationStatus();
 export const actionService: ActionService = new ActionService(applicationStatus);
