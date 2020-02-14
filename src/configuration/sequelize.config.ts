@@ -7,7 +7,7 @@ const options: SequelizeOptions = {
     dialect: 'postgres',
     username: process.env.POSTGRES_USERNAME,
     password: process.env.POSTGRES_PASSWORD,
-    host: process.env.POSTRES_HOST,
+    host: process.env.POSTGRES_HOST,
     ssl: true,
     pool: {
         max: 5,
