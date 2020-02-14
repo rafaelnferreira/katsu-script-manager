@@ -69,6 +69,15 @@ You can setup any port number you wish.
 
 You can define a `SCRIPT_FOLDER` variable in the `.env` file as well, otherwise it will search for scripts under `config/scripts/`.
 
+Add the following envs to connect to the database
+
+```
+POSTGRES_DATABASE =database
+POSTGRES_USERNAME =username
+POSTGRES_PASSWORD =password
+POSTRES_HOST =host
+```
+
   
 
 ### Setting up execution for Scripts

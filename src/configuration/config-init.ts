@@ -1,5 +1,5 @@
 import * as fs from 'fs-extra';
-import {ApplicationStatus} from "../models/application-status";
+import {ApplicationStatus} from "../types/application-status";
 
 export class ConfigInit {
 
