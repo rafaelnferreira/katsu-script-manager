@@ -11,6 +11,29 @@ export class ActionService {
     constructor(private applicationStatus: ApplicationStatus){}
 
     runScript(scriptName: string, args: string[], logsName?: string ): boolean {
+        return this.applicationStatus.acceptingRequests 
+        ? this.findScriptAndRun(scriptName, args, logsName)
+        : this.logAndDoNothing(scriptName);
+    }
+
+    executeJob(job: JobsInput) {
+        logger.debug('Trying to execute job: ' + job.jobName + ' on branch: ' + job.branch);
+        const applicableJobs = jobsConfig.filter(c => c.jobName === job.jobName && c.branch === job.branch);
+
+        if(applicableJobs.length > 0) {
+            logger.debug('Found jobs number: ' + applicableJobs.length);
+            applicableJobs.forEach(job => this.runScript(job.scriptName, job.args, job.name));
+        } else {
+            logger.debug('No applicable jobs found');
+        }
+    }
+
+    private logAndDoNothing(scriptName): boolean {
+        logger.warn(`Received request to execute script ${scriptName}, ignoring it as application is not processing events`);
+        return false;
+    }
+
+    private findScriptAndRun(scriptName: string, args: string[], logsName?: string ): boolean {
         logger.debug('Trying to run script: ' + scriptName);
 
         const matchedScriptFile = this.applicationStatus.scriptsNames.find((s) => s === scriptName);
@@ -38,18 +61,5 @@ export class ActionService {
 
         logger.debug('No script found');
         return false;
-    }
-
-    executeJob(job: JobsInput) {
-        logger.debug('Trying to execute job: ' + job.jobName + ' on branch: ' + job.branch);
-        const applicableJobs = jobsConfig.filter(c => c.jobName === job.jobName && c.branch === job.branch);
-
-        if(applicableJobs.length > 0) {
-            logger.debug('Found jobs number: ' + applicableJobs.length);
-            applicableJobs.forEach(job => this.runScript(job.scriptName, job.args, job.name));
-        } else {
-            logger.debug('No applicable jobs found');
-        }
-        
     }
 }

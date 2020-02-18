@@ -16,7 +16,8 @@ server.set('view engine', 'hbs');
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
 
-initSequelize();
+// DB support disabled
+// initSequelize();
 
 export const logger = getLogger();
 logger.level = 'debug';
@@ -36,14 +37,30 @@ new ConfigInit(applicationStatus);
 server.post('/run-script/:scriptName', (req, res) => {
     const args = req.body;
 
+    logger.debug('received request for script: {} with args {}', req.params.scriptName, args);
+
     const isRunning = actionService.runScript(req.params.scriptName, args);
     isRunning ? res.sendStatus(200) : res.sendStatus(404);
 });
 
 
 server.post('/exec-job', (req, res) => {
-    actionService.executeJob(req.body);
+    const payload = req.body;
+    logger.debug('received exect-job request:', payload);
+    actionService.executeJob(payload);
     res.sendStatus(200);
 });
 
-server.listen(port, () => console.log(`Katsu script server started on port ${port}`));
+server.post('/enable', (req, res) => {
+  logger.info('Enabling processing events');
+  applicationStatus.acceptingRequests = true;
+  res.sendStatus(200);
+});
+
+server.post('/disable', (req, res) => {
+  logger.info('disabling processing events');
+  applicationStatus.acceptingRequests = false;
+  res.sendStatus(200);
+});
+
+server.listen(port, () => logger.info(`Katsu script server started on port ${port}`));
