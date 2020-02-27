@@ -132,9 +132,9 @@ where:
 
 curl -XPOST -H "Accept: application/json" -H "Content-Type: application/json" -d "{
 
-"jobName":"WEBUI",
+\"jobName\": \"WEBUI\",
 
-"branch": "FEAT-DEV-INTEGRATION"
+\"branch\": \"FEAT-DEV-INTEGRATION\"
 
 }" http://localhost:3000/exec-job
 
