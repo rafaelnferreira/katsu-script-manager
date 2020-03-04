@@ -2,7 +2,6 @@ import * as fs from 'fs';
 import { ApplicationStatus } from "../types/application-status";
 import { Util } from '../util/util';
 import { JobsInput } from '../types/jobs-input';
-//import jobsConfig from '../../config/jobs/jobs.config.json';
 import moment from 'moment';
 import { logger } from './../app';
 import { JobsConfig } from '../types/jobs.config';
