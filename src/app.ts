@@ -63,4 +63,18 @@ server.post('/disable', (req, res) => {
   res.sendStatus(200);
 });
 
+server.post('/add-job', (req, res) => {
+  actionService.saveJob(req.body);
+  res.sendStatus(200);
+});
+
+server.delete('/job/:jobName', (req, res) => {
+  actionService.deleteJob(req.params.jobName);
+  res.sendStatus(200);
+});
+
+server.get('/jobs', (req, res) => {
+  res.send(actionService.getJobs());
+})
+
 server.listen(port, () => logger.info(`Katsu script server started on port ${port}`));

@@ -2,9 +2,9 @@ import * as fs from 'fs';
 import { ApplicationStatus } from "../types/application-status";
 import { Util } from '../util/util';
 import { JobsInput } from '../types/jobs-input';
-import jobsConfig from '../../config/jobs/jobs.config.json';
 import moment from 'moment';
 import { logger } from './../app';
+import { JobsConfig } from '../types/jobs.config';
 
 export class ActionService {
 
@@ -18,6 +18,7 @@ export class ActionService {
 
     executeJob(job: JobsInput) {
         logger.debug('Trying to execute job: ' + job.jobName + ' on branch: ' + job.branch);
+        let jobsConfig = require('../../config/jobs/jobs.config.json');
         const applicableJobs = jobsConfig.filter(c => c.jobName === job.jobName && c.branch === job.branch);
 
         if (applicableJobs.length > 0) {
@@ -26,6 +27,28 @@ export class ActionService {
         } else {
             logger.debug('No applicable jobs found');
         }
+    }
+
+    saveJob(job: JobsConfig) {
+        let jobsConfig = require('../../config/jobs/jobs.config.json');
+        jobsConfig.push(job);
+        let newJobs = JSON.stringify(jobsConfig);
+        let s = __dirname + '/../../config/jobs/jobs.config.json';
+        Util.writeToFileAsync(s, newJobs,'Added job succesfully' );
+
+    }
+
+    deleteJob(jobName: string) {
+        let jobsConfig = require(this.applicationStatus.config.jobsConfig);
+        let newJobs = jobsConfig.filter(job => job.name !== jobName);
+        newJobs = JSON.stringify(newJobs);
+        let s = this.applicationStatus.config.jobsConfig;
+        Util.writeToFileAsync(s, newJobs,'Deleted job succesfully' );
+    }
+
+    getJobs(): JobsConfig[] {
+        // I know I know, why don't you do return require() etc..., yeah doesn't work. I think it caches it so it returns the initial file even after edit
+       return JSON.parse(fs.readFileSync(this.applicationStatus.config.jobsConfig, 'UTF-8'));
     }
 
     private logAndDoNothing(scriptName): boolean {

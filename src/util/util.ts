@@ -35,4 +35,14 @@ export class Util{
         process.stdout.pipe(logStream); //attaching the output of the child console to a file
         process.stderr.pipe(logStream)
      }
+
+
+    static writeToFileAsync(file, data, successMsg) {
+        fs.writeFile(file, data, (err) => {
+            if (err) {
+                logger.error(err);
+            }
+            logger.debug(successMsg);
+        });
+    }
 }
