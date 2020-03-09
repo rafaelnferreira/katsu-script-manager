@@ -39,16 +39,16 @@ export class ActionService {
     }
 
     deleteJob(jobName: string) {
-        let jobsConfig = require('../../config/jobs/jobs.config.json');
+        let jobsConfig = require(this.applicationStatus.config.jobsConfig);
         let newJobs = jobsConfig.filter(job => job.name !== jobName);
         newJobs = JSON.stringify(newJobs);
-        let s = __dirname + '/../../config/jobs/jobs.config.json';
+        let s = this.applicationStatus.config.jobsConfig;
         Util.writeToFileAsync(s, newJobs,'Deleted job succesfully' );
     }
 
     getJobs(): JobsConfig[] {
         // I know I know, why don't you do return require() etc..., yeah doesn't work. I think it caches it so it returns the initial file even after edit
-       return JSON.parse(fs.readFileSync(__dirname + '/../../config/jobs/jobs.config.json', 'UTF-8'));
+       return JSON.parse(fs.readFileSync(this.applicationStatus.config.jobsConfig, 'UTF-8'));
     }
 
     private logAndDoNothing(scriptName): boolean {
