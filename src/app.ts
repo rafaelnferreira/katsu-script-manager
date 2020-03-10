@@ -8,6 +8,8 @@ import {ActionService} from "./services/action.service";
 import {ConfigInit} from "./configuration/config-init";
 import { initSequelize } from './configuration/sequelize.config';
 import { configure, getLogger } from 'log4js';
+import path from 'path';
+
 
 const server = express();
 const port = process.env.PORT || 3000 ;
@@ -15,7 +17,9 @@ const port = process.env.PORT || 3000 ;
 server.set('view engine', 'hbs');
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
+server.use('/public', express.static(path.join(__dirname, '../public')));
 
+console.log(path.join(__dirname, '../public'))
 // DB support disabled
 // initSequelize();
 
@@ -43,6 +47,9 @@ server.post('/run-script/:scriptName', (req, res) => {
     isRunning ? res.sendStatus(200) : res.sendStatus(404);
 });
 
+server.get('/', (req, res) => {
+  res.render('jobs', {jobs: actionService.getJobs()});
+});
 
 server.post('/exec-job', (req, res) => {
     const payload = req.body;

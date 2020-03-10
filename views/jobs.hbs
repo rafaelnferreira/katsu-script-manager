@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <style>
+        .odd-colours:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .custom-row {
+            padding: 10px 0 10px 0;
+        }
+
+        .custom-container {
+            margin: 50px 0 50px 0;
+        }
+
+        .red {
+            color: #d9534f;
+        }
+
+        .hidden {
+            visibility: hidden;
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row" style="border-bottom: 2px solid #ddd;">
+            <div class="col-md-6">
+                <h4><b>Job name</b></h4>
+            </div>
+            <div class="col-md-6">
+                <h4><b>Actions</b></h4>
+            </div>
+        </div>
+        {{#each jobs}}
+        <div class="row odd-colours custom-row">
+            <div class="col-md-6">
+                {{this.name}}<br>
+            </div>
+            <div class="col-md-6">
+                <input id="{{this.jobName}}-button" type="submit"
+                    onclick="postExecJob('{{this.jobName}}', '{{this.branch}}')" value="Deploy" class="btn btn-danger">
+                <p id="{{this.jobName}}-msg" class="hidden red">
+
+                </p>
+            </div>
+
+
+        </div>
+        {{/each}}
+
+
+    </div>
+
+    <script>
+        function postExecJob(jobName, branch) {
+
+            const postRequest = {
+                jobName: jobName,
+                branch: branch
+            }
+
+            const xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function () {
+
+                if (xhttp.readyState === XMLHttpRequest.DONE) {
+                    if (status === 0 || (200 >= status && status < 400)) {
+                        const successMessage = `The request has been sent successfully. It will take 10 minutes to deploy the app. The deploy button
+                    will be disabled, refresh again in 10 minutes and try again if it didn't work`;
+                        hideDeployButton(jobName);
+                        displayMessage(jobName, successMessage);
+                    } else {
+                        const errMessage = `An Error has occurred`;
+                        displayMessage(jobName, errMessage);
+                    }
+                }
+
+
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("demo").innerHTML = this.responseText;
+                }
+            };
+
+            xhttp.open('POST', '/exec-job');
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send(JSON.stringify(postRequest));
+        }
+
+        function displayMessage(jobName, message) {
+            const msg = document.getElementById(jobName + '-msg');
+            const isHidden = msg.classList.contains("hidden");
+
+            msg.innerHTML = message;
+            if (isHidden) {
+                msg.classList.remove("hidden");
+            }
+        }
+
+        function hideDeployButton(jobName) {
+            const button = document.getElementById(jobName + '-button');
+            button.classList.add("hidden");
+        }
+    </script>
+</body>
+
+</html>
