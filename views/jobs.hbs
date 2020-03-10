@@ -62,8 +62,11 @@
                     class="btn btn-warning open-areYouSureModal" data-toggle="modal" value="Deploy"
                     data-target="#areYouSureModal">
                 <p id="{{this.jobName}}-msg" class="hidden red">
-
                 </p>
+
+                <input id="{{this.jobName}}-delete" data-jobName="{{this.name}}"
+                    class="btn btn-danger open-deleteModal" data-toggle="modal" value="Delete Job"
+                    data-target="#deleteModal">
             </div>
 
 
@@ -139,6 +142,30 @@
         </div>
     </div>
 
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLabel">You are about to make the biggest mistake of your
+                        life</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    This action will delete the job created permanently. Are you sure? Have you checked with your
+                    manager? Your team? I take no responsability whatsoever. It's on you buddy.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger delete-job-btn" value="Deploy"
+                        data-dismiss="modal">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script>
 
@@ -204,6 +231,14 @@
             const button = document.getElementById(jobName + '-button');
             button.classList.add("hidden");
         }
+
+        function deleteJob(jobName) {
+                        const xhttp = new XMLHttpRequest();
+
+            xhttp.open('DELETE', '/job/'+jobName);
+            xhttp.send();
+
+        }
     </script>
 
     <!-- Modal script -->
@@ -215,6 +250,15 @@
 
             $('.deploy-btn').on('click', function () {
                 postExecJob(jobName, branch);
+            });
+        });
+
+        //delete job
+        $(document).on("click", ".open-deleteModal", function () {
+            const jobName = $(this).data('jobname');
+
+            $('.delete-job-btn').on('click', function () {
+                deleteJob(jobName);
             });
         });
 
