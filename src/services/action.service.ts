@@ -30,7 +30,7 @@ export class ActionService {
     }
 
     saveJob(job: JobsConfig) {
-        let jobsConfig = require(this.applicationStatus.config.jobsConfig);
+        let jobsConfig = this.getJobs();
         jobsConfig.push(job);
         let newJobs = JSON.stringify(jobsConfig);
         let s = this.applicationStatus.config.jobsConfig;
@@ -39,9 +39,9 @@ export class ActionService {
     }
 
     deleteJob(jobName: string) {
-        let jobsConfig = require(this.applicationStatus.config.jobsConfig);
-        let newJobs = jobsConfig.filter(job => job.name !== jobName);
-        newJobs = JSON.stringify(newJobs);
+        let jobsConfig = this.getJobs();
+        jobsConfig = jobsConfig.filter(job => job.name !== jobName);
+        let newJobs = JSON.stringify(jobsConfig);
         let s = this.applicationStatus.config.jobsConfig;
         Util.writeToFileAsync(s, newJobs,'Deleted job succesfully' );
     }

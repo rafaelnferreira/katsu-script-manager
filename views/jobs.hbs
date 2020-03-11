@@ -58,15 +58,22 @@
                 {{this.name}}<br>
             </div>
             <div class="col-md-6">
-                <input id="{{this.jobName}}-button" data-jobName="{{this.jobName}}" data-branch="{{this.branch}}"
-                    class="btn btn-warning open-areYouSureModal" data-toggle="modal" value="Deploy"
-                    data-target="#areYouSureModal">
-                <p id="{{this.jobName}}-msg" class="hidden red">
-                </p>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <input id="{{this.jobName}}-button" data-jobName="{{this.jobName}}"
+                                data-branch="{{this.branch}}" class="btn btn-warning open-areYouSureModal"
+                                data-toggle="modal" value="Deploy" data-target="#areYouSureModal">
+                            <p id="{{this.jobName}}-msg" class="hidden red"></p>
+                        </div>
 
-                <input id="{{this.jobName}}-delete" data-jobName="{{this.name}}"
-                    class="btn btn-danger open-deleteModal" data-toggle="modal" value="Delete Job"
-                    data-target="#deleteModal">
+                        <div class="col-md-3">
+                            <input id="{{this.jobName}}-delete" data-jobName="{{this.name}}"
+                                class="btn btn-danger open-deleteModal" data-toggle="modal" value="Delete Job"
+                                data-target="#deleteModal">
+                        </div>
+                    </div>
+                </div>
             </div>
 
 
@@ -133,6 +140,8 @@
                             <input type="text" class="form-control" id="args" placeholder="Enter args">
                         </div>
                     </form>
+                    <br>
+                    <b>*(Refresh the page to see the changes)</b>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -156,6 +165,9 @@
                 <div class="modal-body">
                     This action will delete the job created permanently. Are you sure? Have you checked with your
                     manager? Your team? I take no responsability whatsoever. It's on you buddy.
+                    <br>
+                    <b>*(Refresh the page to see the changes)</b>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -233,9 +245,9 @@
         }
 
         function deleteJob(jobName) {
-                        const xhttp = new XMLHttpRequest();
+            const xhttp = new XMLHttpRequest();
 
-            xhttp.open('DELETE', '/job/'+jobName);
+            xhttp.open('DELETE', '/job/' + jobName);
             xhttp.send();
 
         }
