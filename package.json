@@ -7,7 +7,7 @@
     "clean": "rm -rf dist",
     "build": "tsc",
     "start": "npm run build && node dist/app.js",
-    "package": "npm run build && zip -r dist/katsu-script-manager.zip dist --exclude \"*.map\" && zip -r dist/katsu-script-manager.zip node_modules "
+    "package": "npm run build && zip -r dist/katsu-script-manager.zip dist --exclude \"*.map\" && zip -r dist/katsu-script-manager.zip node_modules views "
   },
   "author": "Silvio Piccolo",
   "license": "ISC",

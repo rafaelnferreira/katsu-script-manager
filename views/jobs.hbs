@@ -141,7 +141,6 @@
                         </div>
                     </form>
                     <br>
-                    <b>*(Refresh the page to see the changes)</b>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -191,13 +190,17 @@
             });
 
             // transform the args into an array of strings
-            payload['args'] = payload['args'].split('');
+            payload['args'] = payload['args'].split(',');
 
-            const xhttp = new XMLHttpRequest();
-
-            xhttp.open('POST', '/add-job');
-            xhttp.setRequestHeader("Content-type", "application/json");
-            xhttp.send(JSON.stringify(payload));
+            $.ajax('/add-job/', {
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(payload),
+                dataType: 'text/plain',
+            })
+            .always(function() {
+                window.location.reload();
+            });
 
         });
 
@@ -205,7 +208,8 @@
 
             const postRequest = {
                 jobName: jobName,
-                branch: branch
+                branch: branch,
+                runImmediately: true,
             }
 
             const xhttp = new XMLHttpRequest();
@@ -245,10 +249,13 @@
         }
 
         function deleteJob(jobName) {
-            const xhttp = new XMLHttpRequest();
 
-            xhttp.open('DELETE', '/job/' + jobName);
-            xhttp.send();
+            $.ajax('/job/' + jobName, {
+                method: 'DELETE',
+            } )
+            .done(function() {
+                window.location.reload();
+            });
 
         }
     </script>

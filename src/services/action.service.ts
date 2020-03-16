@@ -10,20 +10,20 @@ export class ActionService {
 
     constructor(private applicationStatus: ApplicationStatus) { }
 
-    runScript(scriptName: string, args: string[], logsName?: string): boolean {
+    runScript(scriptName: string, args: string[], logsName?: string, runImmediately?: boolean): boolean {
         return this.applicationStatus.acceptingRequests
-            ? this.findScriptAndRun(scriptName, args, logsName)
+            ? this.findScriptAndRun(scriptName, args, logsName, runImmediately)
             : this.logAndDoNothing(scriptName);
     }
 
     executeJob(job: JobsInput) {
         logger.debug('Trying to execute job: ' + job.jobName + ' on branch: ' + job.branch);
-        let jobsConfig = require(this.applicationStatus.config.jobsConfig);
+        let jobsConfig = this.getJobs();
         const applicableJobs = jobsConfig.filter(c => c.jobName === job.jobName && c.branch === job.branch);
 
         if (applicableJobs.length > 0) {
             logger.debug('Found jobs number: ' + applicableJobs.length);
-            applicableJobs.forEach(job => this.runScript(job.scriptName, job.args, job.name));
+            applicableJobs.forEach(j => this.runScript(j.scriptName, j.args, j.name, job.runImmediately));
         } else {
             logger.debug('No applicable jobs found');
         }
@@ -56,7 +56,7 @@ export class ActionService {
         return false;
     }
 
-    private findScriptAndRun(scriptName: string, args: string[], logsName?: string): boolean {
+    private findScriptAndRun(scriptName: string, args: string[], logsName?: string, runImmediately?: boolean): boolean {
         logger.debug('Trying to run script: ' + scriptName);
 
         const matchedScriptFile = this.applicationStatus.scriptsNames.find((s) => s === scriptName);
@@ -83,7 +83,7 @@ export class ActionService {
 
                 Util.tailLogsToFile(fileLogName, scriptProc);
                 
-            }, this.applicationStatus.config.delayedExecution);
+            }, runImmediately ? 1 : this.applicationStatus.config.delayedExecution);
             
             return true;
         }

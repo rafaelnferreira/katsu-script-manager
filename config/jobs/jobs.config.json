@@ -1,1 +1,1 @@
-[{"name":"DEPLOY_TEST","jobName":"WEBUI","branch":"FEAT-DEV-INTEGRATION","scriptName":"args.bash","args":["--env","dev01"]}]
+[{"name":"DEPLOY_TEST","jobName":"WEBUI","branch":"FEAT-DEV-INTEGRATION","scriptName":"args.bash","args":["--env","dev01"]},{"name":"JOB03","jobName":"job03","branch":"master","scriptName":"args.bash","args":["--env","env03"]},{"name":"JOB02","jobName":"job02","branch":"master","scriptName":"args.bash","args":["--env","env02"]}]
