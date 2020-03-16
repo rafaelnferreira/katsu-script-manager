@@ -18,6 +18,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install
-    - run: npm run build --if-present
+    - run: npm run package --if-present
       env:
         CI: true
+    - uses: actions/upload-artifact@v1
+      with:
+        name: katsu-script-manager.zip
+        path: dist/katsu-script-manager.zip
