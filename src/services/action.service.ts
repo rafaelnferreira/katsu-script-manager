@@ -18,7 +18,7 @@ export class ActionService {
 
     executeJob(job: JobsInput) {
         logger.debug('Trying to execute job: ' + job.jobName + ' on branch: ' + job.branch);
-        let jobsConfig = require('../../config/jobs/jobs.config.json');
+        let jobsConfig = require(this.applicationStatus.config.jobsConfig);
         const applicableJobs = jobsConfig.filter(c => c.jobName === job.jobName && c.branch === job.branch);
 
         if (applicableJobs.length > 0) {
@@ -30,18 +30,18 @@ export class ActionService {
     }
 
     saveJob(job: JobsConfig) {
-        let jobsConfig = require('../../config/jobs/jobs.config.json');
+        let jobsConfig = this.getJobs();
         jobsConfig.push(job);
         let newJobs = JSON.stringify(jobsConfig);
-        let s = __dirname + '/../../config/jobs/jobs.config.json';
+        let s = this.applicationStatus.config.jobsConfig;
         Util.writeToFileAsync(s, newJobs,'Added job succesfully' );
 
     }
 
     deleteJob(jobName: string) {
-        let jobsConfig = require(this.applicationStatus.config.jobsConfig);
-        let newJobs = jobsConfig.filter(job => job.name !== jobName);
-        newJobs = JSON.stringify(newJobs);
+        let jobsConfig = this.getJobs();
+        jobsConfig = jobsConfig.filter(job => job.name !== jobName);
+        let newJobs = JSON.stringify(jobsConfig);
         let s = this.applicationStatus.config.jobsConfig;
         Util.writeToFileAsync(s, newJobs,'Deleted job succesfully' );
     }

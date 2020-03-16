@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <style>
+        .odd-colours:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .custom-row {
+            padding: 10px 0 10px 0;
+        }
+
+        .custom-container {
+            margin: 50px 0 50px 0;
+        }
+
+        .red {
+            color: #d9534f;
+        }
+
+        .hidden {
+            visibility: hidden;
+        }
+
+        .add-new {
+            float: right;
+            margin: 10px 0 0 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <button type="button" class="btn btn-success add-new" data-toggle="modal" data-target="#addNewJobModal"><i>+</i>
+            Add new job
+    </div>
+
+    <div class="container">
+        <div class="row" style="border-bottom: 2px solid #ddd;">
+            <div class="col-md-6">
+                <h4><b>Job name</b></h4>
+            </div>
+            <div class="col-md-6">
+                <h4><b>Actions</b></h4>
+            </div>
+        </div>
+        {{#each jobs}}
+        <div class="row odd-colours custom-row">
+            <div class="col-md-6">
+                {{this.name}}<br>
+            </div>
+            <div class="col-md-6">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <input id="{{this.jobName}}-button" data-jobName="{{this.jobName}}"
+                                data-branch="{{this.branch}}" class="btn btn-warning open-areYouSureModal"
+                                data-toggle="modal" value="Deploy" data-target="#areYouSureModal">
+                            <p id="{{this.jobName}}-msg" class="hidden red"></p>
+                        </div>
+
+                        <div class="col-md-3">
+                            <input id="{{this.jobName}}-delete" data-jobName="{{this.name}}"
+                                class="btn btn-danger open-deleteModal" data-toggle="modal" value="Delete Job"
+                                data-target="#deleteModal">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        {{/each}}
+
+
+    </div>
+
+
+    <!-- Are you sure Modal -->
+    <div class="modal fade" id="areYouSureModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLabel">Are you very very sure?????</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    It will take approximately 10 minutes to deploy the app. The deploy button
+                    will be disabled, refresh the page and try again in 10 minutes if it didn't work
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger deploy-btn" value="Deploy"
+                        data-dismiss="modal">Deploy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add new job Modal -->
+    <div class="modal fade" id="addNewJobModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLabel">Add new job</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="new-job-form">
+                        <div class="form-group">
+                            <label for="name">Name *(see this as an id, give it a recognizable name)</label>
+                            <input type="text" class="form-control" id="name" placeholder="Enter name">
+                        </div>
+                        <div class="form-group">
+                            <label for="jobName">Job name</label>
+                            <input type="text" class="form-control" id="jobName" placeholder="Enter job name">
+                        </div>
+                        <div class="form-group">
+                            <label for="branch">Branch</label>
+                            <input type="text" class="form-control" id="branch" placeholder="Enter target branch">
+                        </div>
+                        <div class="form-group">
+                            <label for="scriptName">Script</label>
+                            <input type="text" class="form-control" id="scriptName" placeholder="Enter script name">
+                        </div>
+                        <div class="form-group">
+                            <label for="args">Args *(enter args separated by comma)</label>
+                            <input type="text" class="form-control" id="args" placeholder="Enter args">
+                        </div>
+                    </form>
+                    <br>
+                    <b>*(Refresh the page to see the changes)</b>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger" id="add-job" data-dismiss="modal">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLabel">You are about to make the biggest mistake of your
+                        life</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    This action will delete the job created permanently. Are you sure? Have you checked with your
+                    manager? Your team? I take no responsability whatsoever. It's on you buddy.
+                    <br>
+                    <b>*(Refresh the page to see the changes)</b>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger delete-job-btn" value="Deploy"
+                        data-dismiss="modal">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        //submitting new job
+        $("#add-job").on("click", () => {
+            //deseralizing the form
+            const form = $('#new-job-form :input');
+            const payload = {};
+            form.each(function () {
+                payload[this.id] = $(this).val();
+            });
+
+            // transform the args into an array of strings
+            payload['args'] = payload['args'].split('');
+
+            const xhttp = new XMLHttpRequest();
+
+            xhttp.open('POST', '/add-job');
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send(JSON.stringify(payload));
+
+        });
+
+        function postExecJob(jobName, branch) {
+
+            const postRequest = {
+                jobName: jobName,
+                branch: branch
+            }
+
+            const xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function () {
+
+                if (xhttp.readyState === XMLHttpRequest.DONE) {
+                    if (status === 0 || (200 >= status && status < 400)) {
+                        const successMessage = `The request has been sent successfully.`;
+                        hideDeployButton(jobName);
+                        displayMessage(jobName, successMessage);
+                    } else {
+                        const errMessage = `An Error has occurred`;
+                        displayMessage(jobName, errMessage);
+                    }
+                }
+            };
+
+            xhttp.open('POST', '/exec-job');
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send(JSON.stringify(postRequest));
+        }
+
+        function displayMessage(jobName, message) {
+            const msg = document.getElementById(jobName + '-msg');
+            const isHidden = msg.classList.contains("hidden");
+
+            msg.innerHTML = message;
+            if (isHidden) {
+                msg.classList.remove("hidden");
+            }
+        }
+
+        function hideDeployButton(jobName) {
+            const button = document.getElementById(jobName + '-button');
+            button.classList.add("hidden");
+        }
+
+        function deleteJob(jobName) {
+            const xhttp = new XMLHttpRequest();
+
+            xhttp.open('DELETE', '/job/' + jobName);
+            xhttp.send();
+
+        }
+    </script>
+
+    <!-- Modal script -->
+    <script>
+        //job execution
+        $(document).on("click", ".open-areYouSureModal", function () {
+            const jobName = $(this).data('jobname');
+            const branch = $(this).data('branch');
+
+            $('.deploy-btn').on('click', function () {
+                postExecJob(jobName, branch);
+            });
+        });
+
+        //delete job
+        $(document).on("click", ".open-deleteModal", function () {
+            const jobName = $(this).data('jobname');
+
+            $('.delete-job-btn').on('click', function () {
+                deleteJob(jobName);
+            });
+        });
+
+    </script>
+</body>
+
+</html>
