@@ -23,5 +23,5 @@ jobs:
         CI: true
     - uses: actions/upload-artifact@v1
       with:
-        name: katsu-script-manager.zip
-        path: dist/katsu-script-manager.zip
+        name: katsu-script-manager-${{ matrix.node-version }}.zip
+        path: dist/katsu-script-manager-${{ matrix.node-version }}.zip
