@@ -1,4 +1,4 @@
-
+![Node.js CI](https://github.com/rafaelnferreira/katsu-script-manager/workflows/Node.js%20CI/badge.svg?branch=master)
   
 
   
