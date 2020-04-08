@@ -1,7 +1,10 @@
 import {Config} from "./config";
 
 export class ApplicationStatus {
-    config: Config = new Config();
+    constructor(public config: Config){ 
+        this.config = config;
+    }
+
     scriptsNames: Array<string> = new Array<string>();
     acceptingRequests = true;
 }
